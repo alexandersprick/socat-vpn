@@ -1,0 +1,19 @@
+# Listen on all interfaces, port 443
+listen: (
+    { host: "0.0.0.0"; port: "443"; }
+);
+
+# Protocol definitions and forwarding rules
+protocols: (
+    # SSH traffic goes to port 22
+    { name: "ssh"; service: "ssh"; host: "127.0.0.1"; port: "22"; },
+
+    # TLS/HTTPS traffic with SNI socat.traffic goes to port 2444
+    { name: "tls"; service: "tls"; host: "127.0.0.1"; port: "2444"; sni_hostnames: [ "socat.traffic" ]; },
+    
+    # TLS/HTTPS traffic goes to port 4443
+    { name: "tls"; service: "tls"; host: "127.0.0.1"; port: "4443"; },
+        
+    # Any unrecognized protocol goes to port 5555
+    { name: "anyprot"; service: "anyprot"; host: "127.0.0.1"; port: "5555"; }
+);

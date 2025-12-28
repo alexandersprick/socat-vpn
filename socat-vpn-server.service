@@ -1,0 +1,15 @@
+[Unit]
+Description=Socat VPN Server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=forking
+ExecStart=/usr/local/bin/socat-vpn-server.sh start
+ExecStop=/usr/local/bin/socat-vpn-server.sh stop
+RemainAfterExit=yes
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

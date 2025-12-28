@@ -1,0 +1,12 @@
+# place or include this in your nginx.conf
+stream {
+    upstream stream_socat {
+        server 127.0.0.1:11443;
+    }
+    server {
+        listen 2444 ssl;
+        proxy_pass stream_socat;
+        ssl_certificate /etc/ssl/nginx/fullchain.pem;
+        ssl_certificate_key /etc/ssl/nginx/privkey.pem;
+    }
+}
