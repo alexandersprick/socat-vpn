@@ -32,7 +32,7 @@ function stop() {
     ip link delete socat1 2>/dev/null
     ip route del default via $DEFAULT_GATEWAY
     ip route add default via $DEFAULT_GATEWAY dev $DEFAULT_DEVICE metric 1
-    ip route del $(dig +short $VPN_SERVER)
+    ip route del $(dig +short $VPN_SERVER | sort | tail -1)
 }
 
 function start() {
@@ -51,7 +51,7 @@ function start() {
     test -z "$TUN_DEV" && return
 
     # socat shall still use the old default route to local router
-    ip route add $(dig +short $VPN_SERVER) via $DEFAULT_GATEWAY dev $DEFAULT_DEVICE
+    ip route add $(dig +short $VPN_SERVER | sort | tail -1) via $DEFAULT_GATEWAY dev $DEFAULT_DEVICE
 
     # Add a new default route via the VPN with higher priority (lower metric)
     ip route add default via $SOCAT_CLIENT_IP dev socat1 metric 1
@@ -60,7 +60,7 @@ function start() {
     ip route del default via $DEFAULT_GATEWAY
     ip route add default via $DEFAULT_GATEWAY dev $DEFAULT_DEVICE metric 100
 
-    # Set DNS to use vpn server. 
+    # Set DNS to use vpn server.
     systemctl stop systemd-resolved
     echo "nameserver $SOCAT_SERVER_IP" > /etc/resolv.conf
 }
